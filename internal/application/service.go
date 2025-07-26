@@ -29,7 +29,10 @@ func Run() {
 	}
 	r.Init(g)
 
-	g.Run(":8080")
+	err := g.Run(":8080")
+	if err != nil {
+		return
+	}
 }
 
 func pollInit() *gorm.DB {

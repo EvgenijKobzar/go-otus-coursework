@@ -89,3 +89,15 @@ go install github.com/golang/mock/mockgen@latest
 ```sh
 go test movies_online/internal/core -race -count 100
 ```
+### Линтер
+Установка
+```sh
+brew install golangci-lint
+```
+```sh
+brew upgrade golangci-lint
+```
+Запуск
+```sh
+golangci-lint run 
+```

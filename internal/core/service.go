@@ -39,9 +39,11 @@ func (service *Service[T]) UpdateInner(id int, inputFields map[string]any) (T, e
 
 	if err == nil {
 		bindings := new(T)
-		mapstructure.MapToStruct(inputFields, bindings)
-		if err = entityAssign[T](entity, *bindings, inputFields); err == nil {
-			err = service.repo.Save(entity)
+		err = mapstructure.MapToStruct(inputFields, bindings)
+		if err == nil {
+			if err = entityAssign[T](entity, *bindings, inputFields); err == nil {
+				err = service.repo.Save(entity)
+			}
 		}
 	}
 	return entity, err

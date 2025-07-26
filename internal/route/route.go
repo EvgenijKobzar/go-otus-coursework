@@ -6,7 +6,6 @@ import (
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	gorm "gorm.io/gorm"
-
 	_ "movies_online/docs"
 	"movies_online/internal/core"
 	"movies_online/internal/handler"
@@ -80,23 +79,23 @@ func (c *Config) Init(router *gin.Engine) {
 		v1.POST("/otus.account.login/", func(context *gin.Context) { handler.LoginAccount(context, c.DB) })
 
 		// Добавьте эндпоинт для проверки состояния БД
-		v1.GET("/health", func(c *gin.Context) {
-			db, _ := c.MustGet("DB").(*gorm.DB)
+		v1.GET("/health", func(context *gin.Context) {
 
-			sqlDB, err := db.DB()
+			sqlDB, err := c.DB.DB()
 			if err != nil {
-				c.JSON(500, gin.H{"status": "unhealthy"})
+				context.JSON(500, gin.H{"status": "unhealthy"})
 				return
 			}
 
 			stats := sqlDB.Stats()
-			c.JSON(200, gin.H{
+			context.JSON(200, gin.H{
 				"status":           "healthy",
 				"open_connections": stats.OpenConnections,
 				"in_use":           stats.InUse,
 				"idle":             stats.Idle,
 				"wait_count":       stats.WaitCount,
 			})
+
 		})
 	}
 }

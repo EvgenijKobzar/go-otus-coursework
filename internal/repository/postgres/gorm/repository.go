@@ -82,7 +82,7 @@ func (r *Repository[T]) GetAll(filterFields map[string]string, orderFields map[s
 
 		result := r.Db.Order(makeSort(orderFields)).Find(&items, filter)
 		if result.Error != nil {
-			err = result.Error
+			return nil, result.Error
 		}
 	}
 

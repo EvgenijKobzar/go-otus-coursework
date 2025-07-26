@@ -156,5 +156,5 @@ func getAccountByLogin(login string, db *gorm.DB) (*model.Account, error) {
 			return item, nil
 		}
 	}
-	return nil, errors.New("Account not found")
+	return nil, errors.New("account not found")
 }
