@@ -87,7 +87,7 @@ go install github.com/golang/mock/mockgen@latest
 ```
 Чтобы запустить код, используйте команду `go test`:
 ```sh
-go test movies_online/internal/core -race -count 100
+go test -race -count 100 ./...
 ```
 ### Линтер
 Установка
