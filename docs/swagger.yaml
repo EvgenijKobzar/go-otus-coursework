@@ -1,0 +1,706 @@
+basePath: /v1
+definitions:
+  catalog.Episode:
+    properties:
+      created_by:
+        type: integer
+      description:
+        type: string
+      duration:
+        type: number
+      fileId:
+        type: integer
+      id:
+        type: integer
+      moderated:
+        type: boolean
+      productionDate:
+        type: string
+      quality:
+        type: string
+      rating:
+        type: number
+      seasonId:
+        type: integer
+      serialId:
+        type: integer
+      sort:
+        type: integer
+      title:
+        type: string
+    required:
+    - title
+    type: object
+  catalog.Season:
+    properties:
+      created_by:
+        type: integer
+      id:
+        type: integer
+      moderated:
+        type: boolean
+      serialId:
+        type: integer
+      sort:
+        type: integer
+      title:
+        type: string
+    required:
+    - title
+    type: object
+  catalog.Serial:
+    properties:
+      description:
+        example: TV series
+        type: string
+      duration:
+        example: 40
+        type: number
+      fileId:
+        example: 0
+        type: integer
+      id:
+        example: 1
+        type: integer
+      productionPeriod:
+        example: 2008-2013
+        type: string
+      quality:
+        example: High
+        type: string
+      rating:
+        example: 9.5
+        type: number
+      sort:
+        example: 1
+        type: integer
+      title:
+        example: Breaking Bad
+        type: string
+    required:
+    - title
+    type: object
+  handler.AccountItemResponse:
+    properties:
+      result:
+        properties:
+          item:
+            $ref: '#/definitions/model.Account'
+        type: object
+    type: object
+  handler.AccountItemsResponse:
+    properties:
+      result:
+        properties:
+          items:
+            items:
+              $ref: '#/definitions/model.Account'
+            type: array
+        type: object
+    type: object
+  handler.AccountLoginRequest:
+    properties:
+      login:
+        example: ekobzar
+        type: string
+      password:
+        example: "123456"
+        type: string
+    type: object
+  handler.AccountRegisterRequest:
+    properties:
+      first_name:
+        example: Kobzar
+        type: string
+      last_name:
+        example: ""
+        type: string
+      login:
+        example: ekobzar
+        type: string
+      name:
+        example: Evgenij
+        type: string
+      password:
+        example: "123456"
+        type: string
+    type: object
+  handler.DeleteResponse:
+    properties:
+      result:
+        properties:
+          deleted:
+            type: boolean
+        type: object
+    type: object
+  handler.EpisodeItemResponse:
+    properties:
+      result:
+        properties:
+          item:
+            $ref: '#/definitions/catalog.Episode'
+        type: object
+    type: object
+  handler.EpisodeItemsResponse:
+    properties:
+      result:
+        properties:
+          items:
+            items:
+              $ref: '#/definitions/catalog.Episode'
+            type: array
+        type: object
+    type: object
+  handler.ErrorResponse:
+    properties:
+      error:
+        example: entity not found
+        type: string
+    type: object
+  handler.SeasonItemResponse:
+    properties:
+      result:
+        properties:
+          item:
+            $ref: '#/definitions/catalog.Season'
+        type: object
+    type: object
+  handler.SeasonItemsResponse:
+    properties:
+      result:
+        properties:
+          items:
+            items:
+              $ref: '#/definitions/catalog.Season'
+            type: array
+        type: object
+    type: object
+  handler.SerialItemResponse:
+    properties:
+      result:
+        properties:
+          item:
+            $ref: '#/definitions/catalog.Serial'
+        type: object
+    type: object
+  handler.SerialItemsResponse:
+    properties:
+      result:
+        properties:
+          items:
+            items:
+              $ref: '#/definitions/catalog.Serial'
+            type: array
+        type: object
+    type: object
+  model.Account:
+    properties:
+      created_at:
+        type: string
+      first_name:
+        example: Kobzar
+        type: string
+      id:
+        example: 1
+        type: integer
+      last_name:
+        example: ""
+        type: string
+      login:
+        example: ekobzar
+        type: string
+      name:
+        example: Evgenij
+        type: string
+      password:
+        example: "123456"
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: evgenij.bx@gmail.com
+  description: API for managing TV series catalog
+  version: "1.0"
+paths:
+  /otus.account.delete/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a account
+      parameters:
+      - description: Account ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.DeleteResponse'
+        "400":
+          description: Not found
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete account
+      tags:
+      - accounts
+  /otus.account.get/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get detailed information about a account
+      parameters:
+      - description: Account ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved account
+          schema:
+            $ref: '#/definitions/handler.AccountItemResponse'
+        "400":
+          description: Not found
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Get account by ID
+      tags:
+      - accounts
+  /otus.account.list:
+    get:
+      consumes:
+      - application/json
+      description: Get list information about account
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved account
+          schema:
+            $ref: '#/definitions/handler.AccountItemsResponse'
+      summary: Get accounts
+      tags:
+      - accounts
+  /otus.account.login:
+    post:
+      consumes:
+      - application/json
+      description: Get token by UserName
+      parameters:
+      - description: Account data
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/handler.AccountLoginRequest'
+      produces:
+      - application/json
+      responses: {}
+      summary: Get token by UserName
+      tags:
+      - accounts
+  /otus.account.register:
+    post:
+      consumes:
+      - application/json
+      description: Add a new account
+      parameters:
+      - description: Account data
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/handler.AccountRegisterRequest'
+      produces:
+      - application/json
+      responses: {}
+      summary: Register new account
+      tags:
+      - accounts
+  /otus.episode.add:
+    post:
+      consumes:
+      - application/json
+      description: Add a new episode to the catalog
+      parameters:
+      - description: Episode data
+        in: body
+        name: episode
+        required: true
+        schema:
+          $ref: '#/definitions/catalog.Episode'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.EpisodeItemResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Create new TV episode
+      tags:
+      - episodes
+  /otus.episode.delete/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a TV episode from catalog
+      parameters:
+      - description: Episode ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.DeleteResponse'
+        "400":
+          description: Not found
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete episode
+      tags:
+      - episodes
+  /otus.episode.get/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get detailed information about a TV episode
+      parameters:
+      - description: Episode ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved episode
+          schema:
+            $ref: '#/definitions/handler.EpisodeItemResponse'
+        "400":
+          description: Not found
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Get episode by ID
+      tags:
+      - episodes
+  /otus.episode.list:
+    get:
+      consumes:
+      - application/json
+      description: Get list information about TV episode
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved episode
+          schema:
+            $ref: '#/definitions/handler.EpisodeItemsResponse'
+      summary: Get episodes
+      tags:
+      - episodes
+  /otus.episode.update/{id}:
+    put:
+      consumes:
+      - application/json
+      description: Update existing TV episode
+      parameters:
+      - description: Episode ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Update data
+        in: body
+        name: episode
+        required: true
+        schema:
+          $ref: '#/definitions/catalog.Episode'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.EpisodeItemResponse'
+        "400":
+          description: Not found
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Update episode
+      tags:
+      - episodes
+  /otus.season.add:
+    post:
+      consumes:
+      - application/json
+      description: Add a new season to the catalog
+      parameters:
+      - description: Season data
+        in: body
+        name: season
+        required: true
+        schema:
+          $ref: '#/definitions/catalog.Season'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.SeasonItemResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Create new TV season
+      tags:
+      - seasons
+  /otus.season.delete/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a TV season from catalog
+      parameters:
+      - description: Season ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.DeleteResponse'
+        "400":
+          description: Not found
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete season
+      tags:
+      - seasons
+  /otus.season.get/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get detailed information about a TV season
+      parameters:
+      - description: Season ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved season
+          schema:
+            $ref: '#/definitions/handler.SeasonItemResponse'
+        "400":
+          description: Not found
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Get season by ID
+      tags:
+      - seasons
+  /otus.season.list:
+    get:
+      consumes:
+      - application/json
+      description: Get list information about TV seasons
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved season
+          schema:
+            $ref: '#/definitions/handler.SeasonItemsResponse'
+      summary: Get seasons
+      tags:
+      - seasons
+  /otus.season.update/{id}:
+    put:
+      consumes:
+      - application/json
+      description: Update existing TV season
+      parameters:
+      - description: Season ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Update data
+        in: body
+        name: season
+        required: true
+        schema:
+          $ref: '#/definitions/catalog.Season'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.SeasonItemResponse'
+        "400":
+          description: Not found
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Update season
+      tags:
+      - seasons
+  /otus.serial.add:
+    post:
+      consumes:
+      - application/json
+      description: Add a new serial to the catalog
+      parameters:
+      - description: Serial data
+        in: body
+        name: serial
+        required: true
+        schema:
+          $ref: '#/definitions/catalog.Serial'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.SerialItemResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Create new TV serial
+      tags:
+      - serials
+  /otus.serial.delete/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a TV serial from catalog
+      parameters:
+      - description: Serial ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.DeleteResponse'
+        "400":
+          description: Not found
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete serial
+      tags:
+      - serials
+  /otus.serial.get/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get detailed information about a TV serial
+      parameters:
+      - description: Serial ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved serial
+          schema:
+            $ref: '#/definitions/handler.SerialItemResponse'
+        "400":
+          description: Not found
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Get serial by ID
+      tags:
+      - serials
+  /otus.serial.list:
+    get:
+      consumes:
+      - application/json
+      description: Get list information about TV series
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved serial
+          schema:
+            $ref: '#/definitions/handler.SerialItemsResponse'
+      summary: Get serials
+      tags:
+      - serials
+  /otus.serial.update/{id}:
+    put:
+      consumes:
+      - application/json
+      description: Update existing TV serial
+      parameters:
+      - description: Serial ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Update data
+        in: body
+        name: serial
+        required: true
+        schema:
+          $ref: '#/definitions/catalog.Serial'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.SerialItemResponse'
+        "400":
+          description: Not found
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Update serial
+      tags:
+      - serials
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

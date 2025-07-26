@@ -1,0 +1,26 @@
+# Перед использованием установить https://taskfile.dev/installation/
+
+version: '3'
+
+dotenv: [".env"]
+
+vars:
+  DB_VERSION_TABLE: "public.goose_db_version"
+
+tasks:
+  migration-up:
+    cmds:
+      - goose -table {{.DB_VERSION_TABLE}} -dir ./internal/migrations postgres $POSTGRES_DB_URL up
+    silent: true
+
+  migration-down:
+    cmds:
+      - goose -table {{.DB_VERSION_TABLE}} -dir ./internal/migrations postgres $POSTGRES_DB_URL down
+    silent: true
+
+  migration-generate: ## task migration-generate -- name="my_migration_name"
+    cmds:
+      - goose -dir ./internal/migrations create {{.name}} sql
+    silent: true
+    vars:
+      name: "{{.CLI_ARGS}}"
