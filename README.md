@@ -80,7 +80,7 @@ go get -u github.com/swaggo/files
 ~/go/bin/swag init -g cmd/internal/application/service.go   
 ```
 ### Тесты
-Для запуска тестов необходмы зависимости
+Для запуска тестов необходимы зависимости
 Зависимости
 ```sh
 go install github.com/golang/mock/mockgen@latest
