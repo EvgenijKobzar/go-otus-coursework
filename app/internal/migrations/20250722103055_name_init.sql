@@ -1,5 +1,7 @@
 -- +goose Up
 -- +goose StatementBegin
+create schema if not exists movies_online;
+
 create table if not exists movies_online.serials
 (
     id        serial primary key,
@@ -157,4 +159,5 @@ drop table movies_online.episodes;
 drop table movies_online.seasons;
 drop table movies_online.serials;
 drop table movies_online.accounts;
+drop schema if exists movies_online;
 -- +goose StatementEnd

@@ -101,3 +101,9 @@ brew upgrade golangci-lint
 ```sh
 golangci-lint run 
 ```
+
+### Docker
+Собрать образ
+```sh
+docker build -t prode-service:local .
+```

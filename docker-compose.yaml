@@ -1,6 +1,16 @@
 version: '3'
 
 services:
+  go-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - postgres
+    ports:
+      - "8080:8080"
+    networks:
+      - go-net
   postgres:
     image: postgres:14
     restart: on-failure
@@ -13,9 +23,9 @@ services:
     volumes:
       - postgres:/var/lib/postgresql/data
     networks:
-      - postgres
+      - go-net
 networks:
-  postgres:
+  go-net:
     driver: bridge
 
 volumes:

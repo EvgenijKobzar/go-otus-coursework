@@ -10,17 +10,17 @@ vars:
 tasks:
   migration-up:
     cmds:
-      - goose -table {{.DB_VERSION_TABLE}} -dir ./internal/migrations postgres $POSTGRES_DB_URL up
+      - goose -table {{.DB_VERSION_TABLE}} -dir ./app/internal/migrations postgres $POSTGRES_DB_URL up
     silent: true
 
   migration-down:
     cmds:
-      - goose -table {{.DB_VERSION_TABLE}} -dir ./internal/migrations postgres $POSTGRES_DB_URL down
+      - goose -table {{.DB_VERSION_TABLE}} -dir ./app/internal/migrations postgres $POSTGRES_DB_URL down
     silent: true
 
   migration-generate: ## task migration-generate -- name="my_migration_name"
     cmds:
-      - goose -dir ./internal/migrations create {{.name}} sql
+      - goose -dir ./app/internal/migrations create {{.name}} sql
     silent: true
     vars:
       name: "{{.CLI_ARGS}}"
