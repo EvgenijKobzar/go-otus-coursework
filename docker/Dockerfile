@@ -1,4 +1,4 @@
-FROM golang:1.24.2-alpine as builder
+FROM golang:1.24.2-alpine AS builder
 
 WORKDIR /usr/local/src
 
@@ -8,15 +8,15 @@ COPY ["app/go.mod", "app/go.sum", "./"]
 
 RUN go mod download
 
-COPY app ./
+COPY ../app ./
 
 RUN go build -o ./bin/app cmd/server/main.go
 
-FROM alpine as runner
+FROM alpine AS runner
 
 COPY --from=builder /usr/local/src/bin/app /
-COPY static /static
-COPY .env.prod /.env
+COPY ../static /static
+COPY ../.env.prod /.env
 EXPOSE 8080
 
 CMD ["/app"]

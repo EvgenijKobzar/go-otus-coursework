@@ -1,12 +1,23 @@
 version: '3'
 
 services:
+  migrates:
+    build:
+      context: .
+      dockerfile: docker/goose/Dockerfile
+    depends_on:
+      - postgres
+    command: >
+      sh -c "sleep 5 &&
+      goose -dir migrations postgres 'postgres://user:password@postgres:5432/postgres?sslmode=disable' up"
+    networks:
+      - go-net
   go-app:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: docker/Dockerfile
     depends_on:
-      - postgres
+      - migrates
     ports:
       - "8080:8080"
     networks:
@@ -26,7 +37,7 @@ services:
       - go-net
 networks:
   go-net:
-    driver: bridge
+#    driver: bridge
 
 volumes:
   postgres:
