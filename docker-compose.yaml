@@ -37,7 +37,6 @@ services:
       - go-net
 networks:
   go-net:
-#    driver: bridge
 
 volumes:
   postgres:
