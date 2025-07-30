@@ -16,7 +16,7 @@ FROM alpine AS runner
 
 COPY --from=builder /usr/local/src/bin/app /
 COPY ../static /static
-COPY ../.env.prod /.env
+COPY ../.env /.env
 EXPOSE 8080
 
 CMD ["/app"]
