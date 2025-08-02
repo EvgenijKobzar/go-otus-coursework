@@ -1,11 +1,14 @@
 package handler
 
 import (
+	"errors"
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
 	"movies_online/internal/core"
 	"movies_online/internal/middleware"
 	"movies_online/internal/model/catalog"
 	"strconv"
+	"strings"
 )
 
 type DeleteResponse struct {
@@ -44,6 +47,7 @@ func (h *Handler[T]) addAction(c *gin.Context) {
 	bindings := new(T)
 
 	err := c.ShouldBind(bindings)
+	err = handleValidationError(c, err)
 
 	if err == nil {
 		entity, err = h.service.AddInner(bindings)
@@ -89,4 +93,25 @@ func setResponse(result gin.H, err error, c *gin.Context) {
 	} else {
 		c.Set(middleware.KeyError, err)
 	}
+}
+
+type ApiError struct {
+	Field   string `json:"field"`   // Название поля, которое не прошло валидацию
+	Message string `json:"message"` // Сообщение об ошибке для этого поля
+}
+
+func handleValidationError(c *gin.Context, err error) error {
+	var ve validator.ValidationErrors
+	if errors.As(err, &ve) {
+		var required []string
+		for _, fe := range ve {
+			if fe.Tag() == "required" {
+				required = append(required, fe.Field())
+			}
+		}
+		if len(required) > 0 {
+			err = errors.New("This field is required:[" + strings.Join(required, ",") + "]")
+		}
+	}
+	return err
 }
