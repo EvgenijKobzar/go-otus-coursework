@@ -47,7 +47,7 @@ func (h *Handler[T]) addAction(c *gin.Context) {
 	bindings := new(T)
 
 	err := c.ShouldBind(bindings)
-	err = handleValidationError(c, err)
+	err = handleValidationError(err)
 
 	if err == nil {
 		entity, err = h.service.AddInner(bindings)
@@ -100,17 +100,25 @@ type ApiError struct {
 	Message string `json:"message"` // Сообщение об ошибке для этого поля
 }
 
-func handleValidationError(c *gin.Context, err error) error {
+func handleValidationError(err error) error {
 	var ve validator.ValidationErrors
 	if errors.As(err, &ve) {
 		var required []string
 		for _, fe := range ve {
 			if fe.Tag() == "required" {
-				required = append(required, fe.Field())
+				if "Title" == fe.Field() {
+					required = append(required, "Название")
+				} else if "SerialId" == fe.Field() {
+					required = append(required, "Сериал")
+				} else if "SeasonId" == fe.Field() {
+					required = append(required, "Сезон")
+				} else {
+					required = append(required, fe.Field())
+				}
 			}
 		}
 		if len(required) > 0 {
-			err = errors.New("This field is required:[" + strings.Join(required, ",") + "]")
+			err = errors.New("Поля обязательные для заполнения:[" + strings.Join(required, ", ") + "]")
 		}
 	}
 	return err
