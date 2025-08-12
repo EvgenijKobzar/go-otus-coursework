@@ -10,9 +10,8 @@ workspace {
     otus = softwareSystem "Otus On-line Films" {
       backend = container "Backend API" "Серверная бизнес-логика" "Java, Spring Boot" {
         /* Компоненты Backend API */
-        authService = component "Auth Service" "Аутентификация и авторизация пользователей" "Spring Security"
+        authService = component "Auth Service" "Проверка JWT"
         catalogService = component "Catalog Service" "Управление каталогом фильмов и сериалов" "Java Service"
-        paymentService = component "Payment Service" "Интеграция с платёжным шлюзом, управление подписками" "Java Service"
         streamingService = component "Streaming Service" "Генерация временных URL и токенов доступа к видео" "Java Service"
         notificationService = component "Notification Service" "Отправка писем и уведомлений" "Java Service"
         analyticsAdapter = component "Analytics Adapter" "Отправка событий в систему аналитики" "Java Service"
@@ -21,18 +20,15 @@ workspace {
 
       db = container "Database" "PostgreSQL"
       cache = container "Cache" "Redis"
-      webUser = container "Web App (User)" "React"
-      webAdmin = container "Web App Admin" "React"
+      webUser = container "Web App (User)" "Vue3"
+      webAdmin = container "Web App Admin" "Vue3"
     }
 
     /* Внешние системы */
-    payment = softwareSystem "Платёжный шлюз" {
-        tags "External"
-    }
     cdn = softwareSystem "Video CDN" {
         tags "External"
     }
-    idp = softwareSystem "Identity Provider (SSO / OAuth)" {
+    objectStorage = softwareSystem "Object Storage / CDN (S3)" "Хранение постеров и медиа‑артефактов"{
         tags "External"
     }
     mail = softwareSystem "Email Service" {
@@ -48,7 +44,6 @@ workspace {
 
     webUser -> authService "Вход/регистрация" "HTTPS/REST"
     webUser -> catalogService "Просмотр каталога, поиск" "HTTPS/REST"
-    webUser -> paymentService "Оформление подписки" "HTTPS/REST"
     webUser -> streamingService "Запрос на просмотр видео" "HTTPS/REST"
 
     webAdmin -> authService "Вход" "HTTPS/REST"
@@ -56,8 +51,7 @@ workspace {
     webAdmin -> catalogService "Управление каталогом" "HTTPS/REST"
 
     /* Связи компонентов между собой и с внешними системами */
-    authService -> idp "Аутентификация через SSO" "OAuth2/SAML"
-    paymentService -> payment "Запросы на оплату / подписку" "REST/HTTPS"
+    adminService -> objectStorage "Работа с файлами"
     streamingService -> cdn "Получение URL и токенов для потокового видео" "HTTPS"
     notificationService -> mail "Отправка email-уведомлений" "SMTP/API"
     analyticsAdapter -> analytics "Передача аналитических событий" "HTTPS"
@@ -65,7 +59,6 @@ workspace {
     /* Доступ к хранилищам */
     catalogService -> db "Чтение/запись данных каталога" "JDBC"
     adminService -> db "Чтение/запись данных пользователей/контента" "JDBC"
-    paymentService -> db "Чтение/запись данных подписок" "JDBC"
     authService -> db "Чтение/запись данных пользователей" "JDBC"
 
     /* Использование кэша */
